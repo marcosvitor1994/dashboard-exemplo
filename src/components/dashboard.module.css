@@ -1,0 +1,31 @@
+.sectionTitle {
+  font-size: 1.8rem;
+  color: var(--text-dark);
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--brasilseg-yellow);
+  padding-bottom: 0.5rem;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.resetButton {
+  background-color: var(--brasilseg-blue);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 1rem;
+}
+
+.resetButton:hover {
+  background-color: #003a8c;
+}

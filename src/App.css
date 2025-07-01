@@ -1,38 +1,614 @@
+:root {
+  --brasilseg-yellow: #ffc700;
+  --brasilseg-blue: #004aad;
+  --background-light: #f4f7fc;
+  --card-bg: #ffffff;
+  --text-dark: #1a202c;
+  --text-light: #4a5568;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --border-radius: 8px;
+}
+
 .App {
-  text-align: center;
+  background-color: var(--background-light);
+  min-height: 100vh;
+  padding: 1rem;
+  padding-top: 3rem; /* Add space for the Nacional logo */
+  position: relative;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@media (min-width: 768px) {
+  .App {
+    padding: 2rem;
+    padding-top: 4rem; /* More space on larger screens */
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Logo Nacional no topo direito */
+.nacionalLogo {
+  position: fixed;
+  top: 0;
+  right: 1rem;
+  z-index: 100;
+  height: 40px;
+  width: auto;
+}
+
+@media (min-width: 768px) {
+  .nacionalLogo {
+    height: 50px;
+    top: 0;
+    right: 1.5rem;
+  }
+}
+
+.header {
+  margin-bottom: 2rem;
+  text-align: left;
+  position: relative;
+  padding-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding-top: 0;
+  }
+}
+
+.brasilsegLogo {
+  height: 60px;
+  width: auto;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .brasilsegLogo {
+    height: 80px;
+  }
+}
+
+.title {
+  font-size: 1.8rem;
+  color: var(--brasilseg-blue);
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+  }
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--text-light);
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .subtitle {
+    font-size: 1.2rem;
+  }
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  color: var(--text-dark);
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--brasilseg-yellow);
+  padding-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .sectionTitle {
+    font-size: 1.8rem;
+  }
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .cardGrid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.resetButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--brasilseg-blue);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+@media (min-width: 768px) {
+  .resetButton {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+}
+
+.resetButton:hover {
+  background-color: #003a8c;
+}
+
+/* Campaign Card Styles */
+.campaignCard {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  border: 2px solid transparent;
+}
+
+.campaignCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.campaignCard.selected {
+  border-color: var(--brasilseg-blue);
+  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.3);
+}
+
+.campaignTitle {
+  font-size: 1rem;
+  color: var(--brasilseg-blue);
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .campaignTitle {
+    font-size: 1.2rem;
+  }
+}
+
+.campaignStats {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-light);
+  font-size: 0.8rem;
+}
+
+@media (min-width: 768px) {
+  .campaignStats {
+    font-size: 0.9rem;
+  }
+}
+
+.campaignStats p {
+  margin: 0;
+}
+
+.campaignStats strong {
+  color: var(--text-dark);
+  font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+  .campaignStats strong {
+    font-size: 1.1rem;
+  }
+}
+
+/* Influencer Card Styles */
+.influencerCard {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  border: 2px solid transparent;
+}
+
+.influencerCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.influencerCard.selected {
+  border-color: var(--brasilseg-yellow);
+  box-shadow: 0 0 0 3px rgba(255, 199, 0, 0.4);
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #e2e8f0;
+}
+
+@media (min-width: 768px) {
+  .avatar {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+.influencerInfo {
+  flex: 1;
+}
+
+.influencerName {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+@media (min-width: 768px) {
+  .influencerName {
+    font-size: 1.1rem;
+  }
+}
+
+.influencerStats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+@media (min-width: 768px) {
+  .influencerStats {
+    font-size: 0.85rem;
+  }
+}
+
+/* Modal Styles */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  width: 100%;
+  max-width: 900px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+@media (min-width: 768px) {
+  .modal {
+    width: 90%;
+    height: 85vh;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: var(--card-bg);
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+
+@media (min-width: 768px) {
+  .modalHeader {
+    padding: 1rem 1.5rem;
+  }
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: var(--brasilseg-blue);
+  font-size: 1.2rem;
+}
+
+@media (min-width: 768px) {
+  .modalHeader h2 {
+    font-size: 1.5rem;
+  }
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-light);
+}
+
+@media (min-width: 768px) {
+  .closeButton {
+    font-size: 2rem;
+  }
+}
+
+.modalContent {
+  padding: 1rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+@media (min-width: 768px) {
+  .modalContent {
+    padding: 1.5rem;
+  }
+}
+
+/* Post Card Styles */
+.postCard {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .postCard {
+    padding: 1.5rem;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.postEmbed {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  border: 2px dashed #e2e8f0;
+}
+
+@media (min-width: 768px) {
+  .postEmbed {
+    min-height: 300px;
+  }
+}
+
+.tiktokPlaceholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--text-light);
+  text-align: center;
+  padding: 2rem;
 }
 
-.App-link {
-  color: #61dafb;
+.tiktokIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--brasilseg-blue);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.postInfo h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--brasilseg-blue);
+  font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+  .postInfo h4 {
+    font-size: 1.2rem;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+.postInfo p {
+  margin: 0 0 1rem 0;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+@media (min-width: 768px) {
+  .postInfo p {
+    font-size: 0.9rem;
+  }
+}
+
+.postLink {
+  color: var(--brasilseg-blue);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .postLink {
+    font-size: 1rem;
+  }
+}
+
+.postLink:hover {
+  text-decoration: underline;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .metricsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+  }
+}
+
+.metric {
+  text-align: center;
+  background-color: var(--background-light);
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+}
+
+@media (min-width: 768px) {
+  .metric {
+    padding: 0.75rem;
+  }
+}
+
+.metricValue {
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--brasilseg-blue);
+}
+
+@media (min-width: 768px) {
+  .metricValue {
+    font-size: 1.4rem;
+  }
+}
+
+.metricLabel {
+  font-size: 0.7rem;
+  color: var(--text-light);
+}
+
+@media (min-width: 768px) {
+  .metricLabel {
+    font-size: 0.8rem;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  font-size: 1rem;
+  color: var(--brasilseg-blue);
+}
+
+@media (min-width: 768px) {
+  .loading {
+    font-size: 1.2rem;
+  }
+}
+
+/* KPI Grid - Responsive Big Numbers */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 480px) {
+  .kpiGrid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .kpiGrid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.kpiCard {
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .kpiCard {
+    padding: 1.5rem;
+  }
+}
+
+.kpiValue {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--brasilseg-blue);
+  margin: 0;
+  line-height: 1.2;
+}
+
+@media (min-width: 480px) {
+  .kpiValue {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .kpiValue {
+    font-size: 1.8rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .kpiValue {
+    font-size: 2rem;
+  }
+}
+
+.kpiLabel {
+  font-size: 0.7rem;
+  color: var(--text-light);
+  margin: 0.25rem 0 0 0;
+  line-height: 1.3;
+}
+
+@media (min-width: 480px) {
+  .kpiLabel {
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .kpiLabel {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .kpiLabel {
+    font-size: 1rem;
   }
 }

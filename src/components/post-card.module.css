@@ -1,0 +1,56 @@
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.postInfo h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--brasilseg-blue);
+}
+
+.postInfo p {
+  margin: 0 0 1rem 0;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.postLink {
+  color: var(--brasilseg-blue);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.postLink:hover {
+  text-decoration: underline;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.metric {
+  text-align: center;
+  background-color: var(--background-light);
+  padding: 0.75rem;
+  border-radius: var(--border-radius);
+}
+
+.metricValue {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--brasilseg-blue);
+}
+
+.metricLabel {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}

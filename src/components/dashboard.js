@@ -1,0 +1,507 @@
+"use client"
+
+import { useState, useEffect, useMemo } from "react"
+
+// Mapeamento das imagens dos influenciadores
+const influencerImages = {
+  "Karen Jonz": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCrHFo3E9ApKjT9WxmQOW5hN47Hl2tmW_ZsA&s",
+  "Beatriz Algranti":
+    "https://media.licdn.com/dms/image/v2/C4E03AQFCYt-Me3feaQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1587398303076?e=1756944000&v=beta&t=47BkuUY5CSQZq30NaiSTB0aKjizRtvO2hfi591Glw60",
+  "Camila Fremder": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjymsA5jWOuCPhEqfweDgfiQxRtJfOELmRtg&s",
+  "Casa Loft 320":
+    "https://static.wixstatic.com/media/701fc0_43f02d8c55054e7fa48b9f9f45fd0b88~mv2.jpg/v1/fill/w_640,h_480,fp_0.50_0.50,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/701fc0_43f02d8c55054e7fa48b9f9f45fd0b88~mv2.jpg",
+  "Gaby Ferraz":
+    "https://yt3.googleusercontent.com/Kr7h2kJMDvV7dvyQa6JFpiuwtoBXp3eRUHknTcR9uIeNFs-CAY8GVcU1GsVl_pMLcIWflAF18A=s900-c-k-c0x00ffffff-no-rj",
+  "Lela Brandão": "https://thesummerhunter.com/content/images/2019/03/lela-brandao-feminismo-ilustracao-6.jpg",
+  "Lorenzo Roos":
+    "https://yt3.googleusercontent.com/dE0NoKpZmp0e3RQlRQTeAlB11AQkd7VBmHAsjMPjX-nxfM_WTqQjiJETcEM70kpB57dRm56eng=s900-c-k-c0x00ffffff-no-rj",
+  "SP Lovers":
+    "https://scontent-bsb1-1.xx.fbcdn.net/v/t39.30808-6/291611365_459717506159026_696172992929225437_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=mNiQm1E88KQQ7kNvwHptNY7&_nc_oc=Adld0wU6W7ASgyTIuJ8i8ip51gwf0dym-HbkD6Psh2c62Dw7KkukDb2eHD9GgqA_uAEfH3inSAh6yeK8DKoqkrWT&_nc_zt=23&_nc_ht=scontent-bsb1-1.xx&_nc_gid=043XQGk6frlBhDrdVIWCEA&oh=00_AfMWK3VhMl5kBAHHRVLBJXV6AtIDwFnzMjOl7ckiobIt-w&oe=686A0AA2",
+  "Drika Vida Na Roça":
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS49KlhUMTskgeNQb2GZLFHCcVOIitQquRmyQ&s",
+  "Lucas Cunha":
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZmZOEqb-CusZ8FtGmdeOPv1DmQKtvwT9PfA&shttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZmZOEqb-CusZ8FtGmdeOPv1DmQKtvwT9PfA&s"
+}
+
+const KpiCard = ({ value, label }) => (
+  <div className="kpiCard">
+    <p className="kpiValue">{value}</p>
+    <p className="kpiLabel">{label}</p>
+  </div>
+)
+
+const PostEmbed = ({ url }) => {
+  useEffect(() => {
+    const loadScript = (src, id) => {
+      if (document.getElementById(id)) return
+      const script = document.createElement("script")
+      script.id = id
+      script.src = src
+      script.async = true
+      script.defer = true
+      document.body.appendChild(script)
+    }
+
+    if (url.includes("instagram.com")) {
+      loadScript("https://www.instagram.com/embed.js", "instagram-embed-script")
+      // Reprocess embeds after script loads
+      setTimeout(() => {
+        if (window.instgrm) {
+          window.instgrm.Embeds.process()
+        }
+      }, 1000)
+    }
+  }, [url])
+
+  if (url.includes("tiktok.com")) {
+    // Para TikTok, vamos mostrar um placeholder com link
+    return (
+      <div className="tiktokPlaceholder">
+        <div className="tiktokIcon">♪</div>
+        <p>Conteúdo do TikTok</p>
+        <a href={url} target="_blank" rel="noopener noreferrer" className="postLink">
+          Ver no TikTok
+        </a>
+      </div>
+    )
+  }
+
+  if (url.includes("instagram.com")) {
+    return (
+      <blockquote
+        className="instagram-media"
+        data-instgrm-captioned
+        data-instgrm-permalink={url}
+        data-instgrm-version="14"
+        style={{
+          background: "#FFF",
+          border: "0",
+          borderRadius: "3px",
+          boxShadow: "0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)",
+          margin: "1px auto",
+          maxWidth: "350px",
+          width: "calc(100% - 2px)",
+          padding: "0",
+        }}
+      ></blockquote>
+    )
+  }
+
+  if (url.includes("youtube.com")) {
+    const videoId = new URL(url).searchParams.get("v")
+    if (videoId) {
+      return (
+        <iframe
+          width="100%"
+          height="200"
+          src={`https://www.youtube.com/embed/${videoId}`}
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          style={{ borderRadius: "8px" }}
+        ></iframe>
+      )
+    }
+  }
+
+  return (
+    <div className="tiktokPlaceholder">
+      <p>Conteúdo não disponível</p>
+      <a href={url} target="_blank" rel="noopener noreferrer" className="postLink">
+        Ver publicação original
+      </a>
+    </div>
+  )
+}
+
+const Dashboard = () => {
+  const [data, setData] = useState({ campaigns: [], influencers: [], posts: [] })
+  const [loading, setLoading] = useState(true)
+  const [selectedCampaign, setSelectedCampaign] = useState(null)
+  const [selectedInfluencer, setSelectedInfluencer] = useState(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://api-nacional.vercel.app/brasilseg/influencers")
+        const result = await response.json()
+
+        if (result.success && result.data && result.data.values) {
+          const processedData = processData(result.data.values)
+          setData(processedData)
+        }
+      } catch (error) {
+        console.error("Erro ao carregar dados:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  const processData = (values) => {
+    if (!values || values.length < 2) {
+      return { campaigns: [], influencers: [], posts: [] }
+    }
+
+    const headers = values[0]
+    const rows = values.slice(1)
+
+    const posts = rows
+      .map((row, rowIndex) => {
+        const post = {}
+        headers.forEach((header, i) => {
+          post[header] = row[i] || ""
+        })
+        post.id = `post-${rowIndex}`
+        return post
+      })
+      .filter((post) => post.Influencer)
+
+    const campaignsMap = new Map()
+    const influencersMap = new Map()
+
+    posts.forEach((post) => {
+      if (post.Campanha) {
+        if (!campaignsMap.has(post.Campanha)) {
+          campaignsMap.set(post.Campanha, {
+            name: post.Campanha,
+            postCount: 0,
+            influencerCount: new Set(),
+          })
+        }
+        const campaign = campaignsMap.get(post.Campanha)
+        campaign.postCount += 1
+        campaign.influencerCount.add(post.Influencer)
+      }
+
+      if (post.Influencer) {
+        if (!influencersMap.has(post.Influencer)) {
+          influencersMap.set(post.Influencer, {
+            name: post.Influencer,
+            postCount: 0,
+            campaignCount: new Set(),
+          })
+        }
+        const influencer = influencersMap.get(post.Influencer)
+        influencer.postCount += 1
+        influencer.campaignCount.add(post.Campanha)
+      }
+    })
+
+    const campaigns = Array.from(campaignsMap.values()).map((c) => ({
+      ...c,
+      influencerCount: c.influencerCount.size,
+    }))
+
+    const influencers = Array.from(influencersMap.values()).map((i) => ({
+      ...i,
+      campaignCount: i.campaignCount.size,
+    }))
+
+    return { campaigns, influencers, posts }
+  }
+
+  const handleCampaignClick = (campaignName) => {
+    setSelectedCampaign((prev) => (prev === campaignName ? null : campaignName))
+    setSelectedInfluencer(null)
+  }
+
+  const handleInfluencerClick = (influencerName) => {
+    setSelectedInfluencer((prev) => (prev === influencerName ? null : influencerName))
+    setSelectedCampaign(null)
+  }
+
+  const resetFilters = () => {
+    setSelectedCampaign(null)
+    setSelectedInfluencer(null)
+  }
+
+  const filteredPosts = useMemo(() => {
+    if (selectedInfluencer) {
+      return data.posts.filter((p) => p.Influencer === selectedInfluencer)
+    }
+    if (selectedCampaign) {
+      return data.posts.filter((p) => p.Campanha === selectedCampaign)
+    }
+    return data.posts
+  }, [selectedCampaign, selectedInfluencer, data.posts])
+
+  const filteredInfluencers = useMemo(() => {
+    if (!selectedCampaign) return data.influencers
+    const influencersInCampaign = new Set(filteredPosts.map((p) => p.Influencer))
+    return data.influencers.filter((i) => influencersInCampaign.has(i.name))
+  }, [selectedCampaign, data.influencers, filteredPosts])
+
+  const filteredCampaigns = useMemo(() => {
+    if (!selectedInfluencer) return data.campaigns
+    const campaignsForInfluencer = new Set(filteredPosts.map((p) => p.Campanha))
+    return data.campaigns.filter((c) => campaignsForInfluencer.has(c.name))
+  }, [selectedInfluencer, data.campaigns, filteredPosts])
+
+  const kpis = useMemo(() => {
+    const relevantPosts = filteredPosts
+    const safeParseInt = (val) => {
+      const num = Number.parseInt(String(val).replace(/\D/g, ""), 10)
+      return isNaN(num) ? 0 : num
+    }
+
+    const totals = relevantPosts.reduce(
+      (acc, post) => {
+        acc.impressions += safeParseInt(post["Impressões"])
+        acc.reach += safeParseInt(post["Alcance"])
+        acc.engagement += safeParseInt(post["Engajamento"])
+        acc.clicks += safeParseInt(post["Cliques no Link"])
+        acc.views += safeParseInt(post["Reproduções"]) || safeParseInt(post["Views"])
+        return acc
+      },
+      { impressions: 0, reach: 0, engagement: 0, clicks: 0, views: 0 },
+    )
+
+    return {
+      ...totals,
+      campaigns: new Set(relevantPosts.map((p) => p.Campanha)).size,
+      influencers: new Set(relevantPosts.map((p) => p.Influencer)).size,
+      posts: relevantPosts.length,
+    }
+  }, [filteredPosts])
+
+  const hasActiveFilter = selectedCampaign || selectedInfluencer
+
+  if (loading) {
+    return <div className="loading">Carregando dados...</div>
+  }
+
+  return (
+    <div>
+      {/* Logo Nacional no canto superior direito */}
+      <img src="/Logo_Nacional_topo.webp" alt="Nacional Comunicação" className="nacionalLogo" />
+
+      <header className="header">
+        {/* Logo Brasilseg substituindo o ícone e título */}
+        <img src="/brasilseg-logo-png.webp" alt="Brasilseg" className="brasilsegLogo" />
+        <p className="subtitle">Dashboard de Influenciadores</p>
+        {hasActiveFilter && (
+          <button onClick={resetFilters} className="resetButton">
+            Limpar Filtros
+          </button>
+        )}
+      </header>
+
+      <div className="kpiGrid">
+        <KpiCard value={kpis.campaigns.toLocaleString("pt-BR")} label="Campanhas" />
+        <KpiCard value={kpis.influencers.toLocaleString("pt-BR")} label="Influenciadores" />
+        <KpiCard value={kpis.posts.toLocaleString("pt-BR")} label="Posts" />
+        <KpiCard value={kpis.impressions.toLocaleString("pt-BR")} label="Impressões" />
+        <KpiCard value={kpis.engagement.toLocaleString("pt-BR")} label="Engajamento" />
+        <KpiCard value={kpis.views.toLocaleString("pt-BR")} label="Views" />
+      </div>
+
+      <h2 className="sectionTitle">Campanhas</h2>
+      <div className="cardGrid">
+        {filteredCampaigns.map((campaign) => (
+          <CampaignCard
+            key={campaign.name}
+            campaign={campaign}
+            onClick={handleCampaignClick}
+            isSelected={selectedCampaign === campaign.name}
+          />
+        ))}
+      </div>
+
+      <h2 className="sectionTitle">Influenciadores</h2>
+      <div className="cardGrid">
+        {filteredInfluencers.map((influencer) => (
+          <InfluencerCard
+            key={influencer.name}
+            influencer={influencer}
+            onClick={handleInfluencerClick}
+            isSelected={selectedInfluencer === influencer.name}
+          />
+        ))}
+      </div>
+
+      {selectedInfluencer && (
+        <InfluencerDetail
+          influencerName={selectedInfluencer}
+          posts={filteredPosts}
+          onClose={() => setSelectedInfluencer(null)}
+        />
+      )}
+    </div>
+  )
+}
+
+const CampaignCard = ({ campaign, onClick, isSelected }) => (
+  <div className={`campaignCard ${isSelected ? "selected" : ""}`} onClick={() => onClick(campaign.name)}>
+    <h3 className="campaignTitle">{campaign.name}</h3>
+    <div className="campaignStats">
+      <p>
+        <strong>{campaign.postCount}</strong> posts
+      </p>
+      <p>
+        <strong>{campaign.influencerCount}</strong> influenciadores
+      </p>
+    </div>
+  </div>
+)
+
+const InfluencerCard = ({ influencer, onClick, isSelected }) => {
+  // Busca a imagem real do influenciador ou usa placeholder
+  const influencerImage =
+    influencerImages[influencer.name] || `/placeholder.svg?width=80&height=80&text=${influencer.name.charAt(0)}`
+
+  const [imageError, setImageError] = useState(false)
+
+  const handleImageError = () => {
+    setImageError(true)
+  }
+
+  return (
+    <div className={`influencerCard ${isSelected ? "selected" : ""}`} onClick={() => onClick(influencer.name)}>
+      <img
+        src={imageError ? `/placeholder.svg?width=80&height=80&text=${influencer.name.charAt(0)}` : influencerImage}
+        alt={influencer.name}
+        className="avatar"
+        onError={handleImageError}
+        crossOrigin="anonymous"
+      />
+      <div className="influencerInfo">
+        <h3 className="influencerName">{influencer.name}</h3>
+        <div className="influencerStats">
+          <span>{influencer.campaignCount} campanha</span>
+          <span>{influencer.postCount} posts</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const InfluencerDetail = ({ influencerName, posts, onClose }) => {
+  const influencerKpis = useMemo(() => {
+    const safeParseInt = (val) => {
+      const num = Number.parseInt(String(val).replace(/\D/g, ""), 10)
+      return isNaN(num) ? 0 : num
+    }
+
+    return posts.reduce(
+      (acc, post) => {
+        acc.impressions += safeParseInt(post["Impressões"])
+        acc.engagement += safeParseInt(post["Engajamento"])
+        acc.views += safeParseInt(post["Reproduções"]) || safeParseInt(post["Views"])
+        acc.clicks += safeParseInt(post["Cliques no Link"])
+        return acc
+      },
+      { impressions: 0, engagement: 0, views: 0, clicks: 0 },
+    )
+  }, [posts])
+
+  // Busca a imagem real do influenciador para o modal
+  const influencerImage =
+    influencerImages[influencerName] || `/placeholder.svg?width=120&height=120&text=${influencerName.charAt(0)}`
+
+  const [imageError, setImageError] = useState(false)
+
+  const handleImageError = () => {
+    setImageError(true)
+  }
+
+  return (
+    <div className="overlay">
+      <div className="modal">
+        <div className="modalHeader">
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <img
+              src={
+                imageError ? `/placeholder.svg?width=60&height=60&text=${influencerName.charAt(0)}` : influencerImage
+              }
+              alt={influencerName}
+              style={{
+                width: "60px",
+                height: "60px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "2px solid var(--brasilseg-yellow)",
+              }}
+              onError={handleImageError}
+              crossOrigin="anonymous"
+            />
+            <h2>{influencerName}</h2>
+          </div>
+          <button onClick={onClose} className="closeButton">
+            &times;
+          </button>
+        </div>
+        <div className="modalContent">
+          <div className="kpiGrid">
+            <KpiCard value={influencerKpis.impressions.toLocaleString("pt-BR")} label="Total Impressões" />
+            <KpiCard value={influencerKpis.engagement.toLocaleString("pt-BR")} label="Total Engajamento" />
+            <KpiCard value={influencerKpis.views.toLocaleString("pt-BR")} label="Total Views" />
+            <KpiCard value={influencerKpis.clicks.toLocaleString("pt-BR")} label="Total Cliques" />
+          </div>
+          {posts.length > 0 ? (
+            posts.map((post) => <PostCard key={post.id} post={post} />)
+          ) : (
+            <p>Nenhum post encontrado para este influenciador.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const Metric = ({ label, value }) => {
+  if (!value || value === "Mídia") return null
+  return (
+    <div className="metric">
+      <span className="metricValue">{Number(value).toLocaleString("pt-BR")}</span>
+      <span className="metricLabel">{label}</span>
+    </div>
+  )
+}
+
+const PostCard = ({ post }) => {
+  const hasMetrics = post.Impressões || post.Alcance || post.Engajamento || post.Likes || post.Comentários
+
+  return (
+    <div className="postCard">
+      <div>
+        <div className="postInfo">
+          <h4>{post.Campanha}</h4>
+          <p>
+            <strong>Plataforma:</strong> {post.Plataforma} | <strong>Formato:</strong> {post.Formato}
+          </p>
+          {post["Link da Publicação"] && (
+            <a href={post["Link da Publicação"]} target="_blank" rel="noopener noreferrer" className="postLink">
+              Ver Publicação Original
+            </a>
+          )}
+        </div>
+        {hasMetrics && (
+          <div className="metricsGrid">
+            <Metric label="Impressões" value={post.Impressões} />
+            <Metric label="Alcance" value={post.Alcance} />
+            <Metric label="Engajamento" value={post.Engajamento} />
+            <Metric label="Likes" value={post.Likes} />
+            <Metric label="Comentários" value={post.Comentários} />
+            <Metric label="Compart." value={post.Compartilhamentos} />
+            <Metric label="Salvos" value={post.Salvos} />
+          </div>
+        )}
+      </div>
+      <div className="postEmbed">
+        {post["Link da Publicação"] ? (
+          <PostEmbed url={post["Link da Publicação"]} />
+        ) : (
+          <div className="tiktokPlaceholder">
+            <p>Link da publicação não disponível</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default Dashboard
