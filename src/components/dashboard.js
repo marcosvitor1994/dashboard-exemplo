@@ -5,10 +5,10 @@ import UserMenu from "./UserMenu"
 
 // Mapeamento das imagens dos influenciadores
 const influencerImages = {
-  "Karen Jonz": "https://static.ndmais.com.br/2021/07/karen-jonz-800x665.jpeg",
+  "Karen Jonz": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCrHFo3E9ApKjT9WxmQOW5hN47Hl2tmW_ZsA&s",
   "Beatriz Algranti":
     "https://media.licdn.com/dms/image/v2/C4E03AQFCYt-Me3feaQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1587398303076?e=1756944000&v=beta&t=47BkuUY5CSQZq30NaiSTB0aKjizRtvO2hfi591Glw60",
-  "Camila Fremder": "https://www.meioemensagem.com.br/wp-content/uploads/2024/09/Camila-Fremder-Credito-Divulgacao.jpg",
+  "Camila Fremder": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjymsA5jWOuCPhEqfweDgfiQxRtJfOELmRtg&s",
   "Casa Loft 320":
     "https://static.wixstatic.com/media/701fc0_43f02d8c55054e7fa48b9f9f45fd0b88~mv2.jpg/v1/fill/w_640,h_480,fp_0.50_0.50,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/701fc0_43f02d8c55054e7fa48b9f9f45fd0b88~mv2.jpg",
   "Gaby Ferraz":
@@ -19,7 +19,9 @@ const influencerImages = {
   "SP Lovers":
     "https://scontent-bsb1-1.xx.fbcdn.net/v/t39.30808-6/291611365_459717506159026_696172992929225437_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=mNiQm1E88KQQ7kNvwHptNY7&_nc_oc=Adld0wU6W7ASgyTIuJ8i8ip51gwf0dym-HbkD6Psh2c62Dw7KkukDb2eHD9GgqA_uAEfH3inSAh6yeK8DKoqkrWT&_nc_zt=23&_nc_ht=scontent-bsb1-1.xx&_nc_gid=043XQGk6frlBhDrdVIWCEA&oh=00_AfMWK3VhMl5kBAHHRVLBJXV6AtIDwFnzMjOl7ckiobIt-w&oe=686A0AA2",
   "Drika Vida Na Roça":
-    "https://scontent-bsb1-1.cdninstagram.com/v/t51.2885-19/463029905_1546524995991205_3219676860575580175_n.jpg?stp=dst-jpg_s320x320_tt6&_nc_ht=scontent-bsb1-1.cdninstagram.com&_nc_cat=101&_nc_oc=Q6cZ2QH2KbPfGubQ3MoRHhpILvWrmFitdSoVyAs_Ly1rtHoV81VdGmOFeAUm0P3XWdXswQ-rhKjEkmDotd_l3EHMevk6&_nc_ohc=RoER9qYtQ30Q7kNvwEsS1N3&_nc_gid=mS1fl4HUTC-i7t3TAXDrdg&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfMI1BpU6p3mLAgeMSJbuL18MuNerikWPHO8Si-0z0fFHA&oe=686A1702&_nc_sid=8b3546",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS49KlhUMTskgeNQb2GZLFHCcVOIitQquRmyQ&s",
+  "Lucas Cunha":
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZmZOEqb-CusZ8FtGmdeOPv1DmQKtvwT9PfA&shttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZmZOEqb-CusZ8FtGmdeOPv1DmQKtvwT9PfA&s"
 }
 
 const HeaderKpiCard = ({ value, label }) => (
@@ -282,16 +284,20 @@ const Dashboard = () => {
 
   return (
     <div>
-      {/* Logo Nacional no canto superior direito */}
-      <img src="/Logo_Nacional_topo.webp" alt="Nacional Comunicação" className="nacionalLogo" />
-
-      {/* Header reorganizado com logo, KPIs e menu do usuário */}
-      <header className="header">
-        <div className="headerLeft">
-          <img src="/brasilseg-logo-png.webp" alt="Brasilseg" className="brasilsegLogo" />
-          <p className="subtitle">Dashboard de Influenciadores</p>
+      {/* Barra fixa no topo */}
+      <div className="topBar">
+        <div className="topBarLeft">
+          <img src="/brasilseg-logo-png.webp" alt="Brasilseg" className="topBarBrasilsegLogo" />
+          <span className="topBarSubtitle">Dashboard de Influenciadores</span>
         </div>
+        <div className="topBarRight">
+          <UserMenu />
+          <img src="/Logo_Nacional_topo.webp" alt="Nacional Comunicação" className="nacionalLogo" />
+        </div>
+      </div>
 
+      {/* Header apenas com KPIs */}
+      <header className="header">
         <div className="headerKpiGrid">
           <HeaderKpiCard value={kpis.campaigns.toLocaleString("pt-BR")} label="Campanhas" />
           <HeaderKpiCard value={kpis.influencers.toLocaleString("pt-BR")} label="Influenciadores" />
@@ -301,17 +307,18 @@ const Dashboard = () => {
           <HeaderKpiCard value={kpis.views.toLocaleString("pt-BR")} label="Views" />
         </div>
 
-        <UserMenu />
+        {/* Botão de reset removido daqui */}
+      </header>
 
+      <div className="sectionHeader">
+        <h2 className="sectionTitle">Campanhas</h2>
         {hasActiveFilter && (
           <button onClick={resetFilters} className="resetButton">
             Limpar Filtros
           </button>
         )}
-      </header>
-
-      <h2 className="sectionTitle">Campanhas</h2>
-      <div className="cardGrid">
+      </div>
+      <div className="campaignsGrid">
         {filteredCampaigns.map((campaign) => (
           <CampaignCard
             key={campaign.name}
@@ -322,7 +329,9 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <h2 className="sectionTitle">Influenciadores</h2>
+      <div className="sectionHeader">
+        <h2 className="sectionTitle">Influenciadores</h2>
+      </div>
       <div className="cardGrid">
         {filteredInfluencers.map((influencer) => (
           <InfluencerCard
