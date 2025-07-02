@@ -10,8 +10,6 @@ const AUTHORIZED_EMAILS = ["diogo.bobsin@gmail.com"]
 
 const AUTHORIZED_DOMAINS = [
   "naccom.com.br",
-  "bb.com.br",
-  "nmbb.com.br",
   "brasilseg.com.br",
   // Adicione aqui outros domínios corporativos que devem ter acesso
 ]
