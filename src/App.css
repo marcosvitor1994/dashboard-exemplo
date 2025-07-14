@@ -399,8 +399,14 @@
 
 @media (min-width: 768px) {
   .headerKpiGrid {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .headerKpiGrid {
+    grid-template-columns: repeat(8, 1fr);
   }
 }
 
@@ -419,7 +425,7 @@
 }
 
 .headerKpiValue {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: var(--brasilseg-blue);
   margin: 0;
@@ -428,11 +434,17 @@
 
 @media (min-width: 480px) {
   .headerKpiValue {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 }
 
 @media (min-width: 768px) {
+  .headerKpiValue {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
   .headerKpiValue {
     font-size: 1.6rem;
   }
@@ -677,12 +689,16 @@
 
 .influencerInfo {
   flex: 1;
+  min-width: 0; /* Permite que o conteúdo encolha */
 }
 
 .influencerName {
   margin: 0 0 0.5rem 0;
   font-size: 1rem;
   color: var(--text-dark);
+  white-space: nowrap; /* Impede quebra de linha */
+  overflow: hidden; /* Esconde o texto que transborda */
+  text-overflow: ellipsis; /* Adiciona reticências (...) ao texto transbordado */
 }
 
 @media (min-width: 768px) {
@@ -989,7 +1005,7 @@
 }
 
 .kpiValue {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: var(--brasilseg-blue);
   margin: 0;
@@ -998,19 +1014,19 @@
 
 @media (min-width: 480px) {
   .kpiValue {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 }
 
 @media (min-width: 768px) {
   .kpiValue {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 }
 
 @media (min-width: 1024px) {
   .kpiValue {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 }
 
@@ -1037,4 +1053,55 @@
   .kpiLabel {
     font-size: 1rem;
   }
+}
+
+/* Campaign Charts */
+.chartsContainer {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  height: 0;
+  overflow: hidden;
+}
+
+.chartsContainer.visible {
+  opacity: 1;
+  transform: translateY(0);
+  height: auto;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .chartsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.chartWrapper {
+  height: 450px;
+  position: relative;
+}
+
+.chartTitle {
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Sentiment Chart */
+.sentimentChartWrapper {
+  height: 150px;
+  margin-top: 1rem;
 }
