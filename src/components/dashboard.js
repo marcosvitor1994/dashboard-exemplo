@@ -835,16 +835,74 @@ const Dashboard = () => {
   }, [selectedCampaign, selectedInfluencer, data.posts, startDate, endDate])
 
   const filteredInfluencers = useMemo(() => {
-    if (!selectedCampaign) return data.influencers
-    const influencersInCampaign = new Set(filteredPosts.map((p) => p.Influencer))
-    return data.influencers.filter((i) => influencersInCampaign.has(i.name))
-  }, [selectedCampaign, data.influencers, filteredPosts])
+    // Se há filtro de campanha, filtra influenciadores dessa campanha
+    if (selectedCampaign) {
+      const influencersInCampaign = new Set(filteredPosts.map((p) => p.Influencer))
+      return data.influencers.filter((i) => influencersInCampaign.has(i.name))
+    }
+
+    // Se há filtro de data, recalcula influenciadores baseado nos posts filtrados por data
+    if (startDate || endDate) {
+      const influencersInDateRange = new Map()
+
+      filteredPosts.forEach((post) => {
+        if (post.Influencer) {
+          if (!influencersInDateRange.has(post.Influencer)) {
+            influencersInDateRange.set(post.Influencer, {
+              name: post.Influencer,
+              postCount: 0,
+              campaignCount: new Set(),
+            })
+          }
+          const influencer = influencersInDateRange.get(post.Influencer)
+          influencer.postCount += 1
+          influencer.campaignCount.add(post.Campanha)
+        }
+      })
+
+      return Array.from(influencersInDateRange.values()).map((i) => ({
+        ...i,
+        campaignCount: i.campaignCount.size,
+      }))
+    }
+
+    return data.influencers
+  }, [selectedCampaign, data.influencers, filteredPosts, startDate, endDate])
 
   const filteredCampaigns = useMemo(() => {
-    if (!selectedInfluencer) return data.campaigns
-    const campaignsForInfluencer = new Set(filteredPosts.map((p) => p.Campanha))
-    return data.campaigns.filter((c) => campaignsForInfluencer.has(c.name))
-  }, [selectedInfluencer, data.campaigns, filteredPosts])
+    // Se há filtro de influenciador, filtra campanhas desse influenciador
+    if (selectedInfluencer) {
+      const campaignsForInfluencer = new Set(filteredPosts.map((p) => p.Campanha))
+      return data.campaigns.filter((c) => campaignsForInfluencer.has(c.name))
+    }
+
+    // Se há filtro de data, recalcula campanhas baseado nos posts filtrados por data
+    if (startDate || endDate) {
+      const campaignsInDateRange = new Map()
+
+      filteredPosts.forEach((post) => {
+        if (post.Campanha) {
+          if (!campaignsInDateRange.has(post.Campanha)) {
+            campaignsInDateRange.set(post.Campanha, {
+              name: post.Campanha,
+              postCount: 0,
+              influencerCount: new Set(),
+            })
+          }
+          const campaign = campaignsInDateRange.get(post.Campanha)
+          campaign.postCount += 1
+          campaign.influencerCount.add(post.Influencer)
+        }
+      })
+
+      return Array.from(campaignsInDateRange.values()).map((c) => ({
+        ...c,
+        influencerCount: c.influencerCount.size,
+      }))
+    }
+
+    return data.campaigns
+  }, [selectedInfluencer, data.campaigns, filteredPosts, startDate, endDate])
 
   const kpis = useMemo(() => {
     const relevantPosts = filteredPosts
