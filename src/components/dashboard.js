@@ -638,6 +638,36 @@ const CampaignCharts = ({ posts, campaignName }) => {
   )
 }
 
+const DateFilter = ({ startDate, endDate, onStartDateChange, onEndDateChange, onClear }) => (
+  <div className="dateFilter">
+    <div className="dateFilterInputs">
+      <div className="dateInputGroup">
+        <label htmlFor="startDate">Data Inicial:</label>
+        <input
+          type="date"
+          id="startDate"
+          value={startDate}
+          onChange={(e) => onStartDateChange(e.target.value)}
+          className="dateInput"
+        />
+      </div>
+      <div className="dateInputGroup">
+        <label htmlFor="endDate">Data Final:</label>
+        <input
+          type="date"
+          id="endDate"
+          value={endDate}
+          onChange={(e) => onEndDateChange(e.target.value)}
+          className="dateInput"
+        />
+      </div>
+      <button onClick={onClear} className="clearDateButton">
+        Limpar Datas
+      </button>
+    </div>
+  </div>
+)
+
 // --- Main Dashboard Component ---
 
 const Dashboard = () => {
@@ -646,6 +676,8 @@ const Dashboard = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(null)
   const [selectedInfluencer, setSelectedInfluencer] = useState(null)
   const [chartsVisible, setChartsVisible] = useState(false)
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -682,6 +714,13 @@ const Dashboard = () => {
           post[header] = row[i] || ""
         })
         post.id = `post-${rowIndex}`
+
+        // Parse da data
+        if (post.Date) {
+          const [day, month, year] = post.Date.split("/")
+          post.parsedDate = new Date(year, month - 1, day)
+        }
+
         // Parse numeric values
         post["Impressões"] = safeParseInt(post["Impressões"])
         post["Alcance"] = safeParseInt(post["Alcance"])
@@ -731,6 +770,19 @@ const Dashboard = () => {
     return { campaigns, influencers, posts }
   }
 
+  const handleStartDateChange = (date) => {
+    setStartDate(date)
+  }
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date)
+  }
+
+  const clearDateFilter = () => {
+    setStartDate("")
+    setEndDate("")
+  }
+
   const handleCampaignClick = (campaignName) => {
     const newSelectedCampaign = selectedCampaign === campaignName ? null : campaignName
     setSelectedCampaign(newSelectedCampaign)
@@ -748,17 +800,39 @@ const Dashboard = () => {
     setSelectedCampaign(null)
     setSelectedInfluencer(null)
     setChartsVisible(false)
+    setStartDate("")
+    setEndDate("")
   }
 
   const filteredPosts = useMemo(() => {
+    let posts = data.posts
+
+    // Filtro por data
+    if (startDate || endDate) {
+      posts = posts.filter((post) => {
+        if (!post.parsedDate) return false
+
+        const postDate = post.parsedDate
+        const start = startDate ? new Date(startDate) : null
+        const end = endDate ? new Date(endDate) : null
+
+        if (start && postDate < start) return false
+        if (end && postDate > end) return false
+
+        return true
+      })
+    }
+
+    // Filtros existentes
     if (selectedInfluencer) {
-      return data.posts.filter((p) => p.Influencer === selectedInfluencer)
+      return posts.filter((p) => p.Influencer === selectedInfluencer)
     }
     if (selectedCampaign) {
-      return data.posts.filter((p) => p.Campanha === selectedCampaign)
+      return posts.filter((p) => p.Campanha === selectedCampaign)
     }
-    return data.posts
-  }, [selectedCampaign, selectedInfluencer, data.posts])
+
+    return posts
+  }, [selectedCampaign, selectedInfluencer, data.posts, startDate, endDate])
 
   const filteredInfluencers = useMemo(() => {
     if (!selectedCampaign) return data.influencers
@@ -802,7 +876,7 @@ const Dashboard = () => {
     }
   }, [filteredPosts])
 
-  const hasActiveFilter = selectedCampaign || selectedInfluencer
+  const hasActiveFilter = selectedCampaign || selectedInfluencer || startDate || endDate
 
   if (loading) {
     return (
@@ -837,6 +911,14 @@ const Dashboard = () => {
           <HeaderKpiCard value={kpis.engagement.toLocaleString("pt-BR")} label="Engajamento" />
           <HeaderKpiCard value={kpis.views.toLocaleString("pt-BR")} label="Views" />
         </div>
+
+        <DateFilter
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={handleStartDateChange}
+          onEndDateChange={handleEndDateChange}
+          onClear={clearDateFilter}
+        />
       </header>
 
       <div className="sectionHeader">

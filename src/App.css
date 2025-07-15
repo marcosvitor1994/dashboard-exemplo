@@ -1105,3 +1105,79 @@
   height: 150px;
   margin-top: 1rem;
 }
+
+/* Date Filter Styles */
+.dateFilter {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.dateFilterInputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+}
+
+@media (min-width: 768px) {
+  .dateFilterInputs {
+    gap: 1.5rem;
+  }
+}
+
+.dateInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dateInputGroup label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.dateInput {
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  background-color: white;
+  color: var(--text-dark);
+  min-width: 140px;
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: var(--brasilseg-blue);
+  box-shadow: 0 0 0 2px rgba(0, 74, 173, 0.2);
+}
+
+.clearDateButton {
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  height: fit-content;
+}
+
+.clearDateButton:hover {
+  background-color: #4b5563;
+}
+
+@media (max-width: 767px) {
+  .dateFilterInputs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dateInput {
+    min-width: auto;
+  }
+}
