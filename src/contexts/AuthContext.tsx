@@ -40,11 +40,12 @@ const AUTHORIZED_EMAILS = [
   "marcosvitor1994@gmail.com", 
   "vitor.checkmedia@gmail.com",
   "lucas@goonadgroup.com",
+  "gustavo@goonadgroup.com",
 ]
 
 
 const AUTHORIZED_DOMAINS = [
-  "@goonadgroup.com",
+  "goonadgroup.com",
 ]
 
 // Função para verificar se o email está autorizado
